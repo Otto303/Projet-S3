@@ -3,4 +3,4 @@
 
 size_t mystrlen(char *s);
 char* mystrcpy(char* s);
-char* mystrtolower(char* s);
+void mystrtolower(char* s);

@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 size_t mystrlen(char *s)
-//give len of a string
+//give size of a string
 {
 	size_t i = 0;
 	while( *(s+i) != 0 )
@@ -11,28 +11,26 @@ size_t mystrlen(char *s)
 }
 
 char* mystrcpy(char* s)
-//returna a copy of a string
+//return a copy of a string
+//WARNING! remeber to free the new string after used!
 {
 	char *s2;
-	s2 = (char*)malloc(20);
-	char *p1 = s;
-	char *p2 = s2;
-	while (*p1 != '\0')
+	s2 = malloc(1);
+	size_t i = 0;
+	while (*(s+i) != '\0')
 	{
-		*p2 = *p1;
-		p1++;
-		p2++;
+		s2 = realloc(s2,i+1);
+		*(s2+i) = *(s+i);
+		i++;
 	}
-	*p2 = '\0';
+	*(s2+i) = '\0';
 	return s2;
 }
 
-char* mystrtolower(char* s)
-//return a copy of a string with every capital letters lowered
+void mystrtolower(char* s)
+//lower every capital letter in place
 {
-	char *s2 = mystrcpy(s);
-	for(char *p = s2; *p != 0; p++)
-		if(65<=*p && *p<=90)
+	for(char *p = s; *p != 0; p++)
+		if('A'<=*p && *p<='Z')
 			*p+=32;
-	return s2;
 }
