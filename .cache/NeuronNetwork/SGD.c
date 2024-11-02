@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <math.h> //Remeber '-lm' in gcc
+#include <math.h>
 #include "minibatch.h"
 #include "evaluate.h"
 

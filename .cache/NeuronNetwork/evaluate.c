@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include <stdio.h>
 #include "data.h"
 #include "network.h"
 #include "feedforward.h"

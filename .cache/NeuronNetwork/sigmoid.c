@@ -1,6 +1,4 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <math.h> //Remeber '-lm' in gcc
+#include <math.h>
 
 double sigmoid(double z)
 {

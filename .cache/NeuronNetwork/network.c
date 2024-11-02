@@ -1,6 +1,5 @@
 #include <stdlib.h>
-#include <stdio.h>
-#include <math.h> //Remeber '-lm' in gcc
+#include <math.h>
 
 //return random following Gaussian distributions
 //with mean 0 and standard deviation 1
