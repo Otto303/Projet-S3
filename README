@@ -1,6 +1,19 @@
-Hello World!
------------
-S3 Prject
------------
-Please put your files in the correct emplacement (in the .cache folder, in the folder if what you are doing)
-Don't forget to create your own branch
+HOW TO USE:
+
+(Rmember to make)
+
+---SOLVER---
+iput:
+	./solver "grid_name" "word_to_find"
+output:
+	("first_letter_coordonates")("last_letter_coordonates")
+
+---Network---
+input:
+	./network 0	#To not evaluate for each epoch (faster)
+	./network 1	#To evaluate for each epoch (slower, but displays advencement of training)
+output:
+	Epoch "current_epoch_number": "training_test_successful"/"training_test_total"	#if evaluate
+	Epoch "current_epoch_number" complete						#otherwise
+	Correct results: "training_test_successful" out of "training_test_total"
+	Input: "training_test_inputs", Expected output: "training_test_expected",Network output: "training_test_output"	#for each element in training_test
