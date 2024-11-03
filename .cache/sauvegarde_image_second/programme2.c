@@ -4,40 +4,41 @@
 #include <stdbool.h>
 
 int is_dark_pixel(Uint8 r, Uint8 g, Uint8 b) {
-    int threshold = 200;
+    int threshold = 250;
     return (r < threshold) && (g < threshold) && (b < threshold);
 }
 
-// Function to detect the bounds of a letter starting from a given position
+// Function to detect the bounds of a single letter from a specific point, limiting the bounds
 SDL_Rect detecter_limites_lettre(SDL_Surface *surface, int x, int y) {
     SDL_Rect letter = {x, y, 0, 0};
-    int x2 = x;
-    int y2 = y;
+    int left = x, right = x, top = y, bottom = y;
 
-    // Extend right to find the width of the letter
-    while (x2 < surface->w) {
-        Uint32 pixel = ((Uint32*)surface->pixels)[y * surface->w + x2];
+    // Expand to the right
+    while (right < surface->w) {
+        Uint32 pixel = ((Uint32*)surface->pixels)[y * surface->w + right];
         Uint8 r, g, b;
         SDL_GetRGB(pixel, surface->format, &r, &g, &b);
         if (!is_dark_pixel(r, g, b)) break;
-        x2++;
+        right++;
     }
-    letter.w = x2 - x;
 
-    // Extend down to find the height of the letter
-    while (y2 < surface->h) {
-        Uint32 pixel = ((Uint32*)surface->pixels)[y2 * surface->w + x];
+    // Expand to the bottom
+    while (bottom < surface->h) {
+        Uint32 pixel = ((Uint32*)surface->pixels)[bottom * surface->w + x];
         Uint8 r, g, b;
         SDL_GetRGB(pixel, surface->format, &r, &g, &b);
         if (!is_dark_pixel(r, g, b)) break;
-        y2++;
+        bottom++;
     }
-    letter.h = y2 - y;
+
+    letter.x = left;
+    letter.y = top;
+    letter.w = right - left;
+    letter.h = bottom - top;
 
     return letter;
 }
 
-// Function to extract and save the letter as a BMP image
 int enregistrer_lettre(SDL_Surface *surface, SDL_Rect letter, const char* filename) {
     SDL_Surface *letter_surface = SDL_CreateRGBSurface(0, letter.w, letter.h, 24, 0x00FF0000, 0x0000FF00, 0x000000FF, 0);
     if (!letter_surface) {
@@ -112,4 +113,3 @@ int main(int argc, char* argv[]) {
 
     return 0;
 }
-
