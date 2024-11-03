@@ -111,7 +111,7 @@ void open_window() {
         return;
     }
 
-    TTF_Font *font = TTF_OpenFont("Roboto/Roboto-Regular.ttf", 24);
+    TTF_Font *font = TTF_OpenFont(".cache/Interface/Roboto/Roboto-Regular.ttf", 24);
     if (!font) {
         printf("La police n'a pas pu être chargée: %s\n", TTF_GetError());
         SDL_DestroyRenderer(renderer);
@@ -122,7 +122,7 @@ void open_window() {
         return;
     }
 
-    TTF_Font *titleFont = TTF_OpenFont("Roboto/Roboto-Regular.ttf", 48);
+    TTF_Font *titleFont = TTF_OpenFont(".cache/Interface/Roboto/Roboto-Regular.ttf", 48);
     if (!titleFont) {
         printf("La police pour le titre n'a pas pu être chargée: %s\n", TTF_GetError());
         SDL_DestroyRenderer(renderer);
