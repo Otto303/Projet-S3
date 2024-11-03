@@ -23,19 +23,19 @@ unsigned int read_uint32_le(FILE *file) {
 Image* read_image_bmp(const char *filename) {
     FILE *bmp_file = fopen(filename, "rb");
     if (!bmp_file) {
-        printf("Erreur : impossible d'ouvrir le fichier BMP.\n");
+        printf("Error : unable to load BMP file.\n");
         return NULL;
     }
 
     fseek(bmp_file, 18, SEEK_SET);
     unsigned int width = read_uint32_le(bmp_file);
     unsigned int height = read_uint32_le(bmp_file);
-    printf("Largeur : %u, Hauteur : %u\n", width, height);
+    printf("Width : %u, Height : %u\n", width, height);
 
     int row_padded = (width * 3 + 3) & (~3);
     unsigned char *data = (unsigned char*)malloc(row_padded * height);
     if (!data) {
-        printf("Erreur : impossible d'allouer de la mémoire.\n");
+        printf("Erreur : unable to allow memory.\n");
         fclose(bmp_file);
         return NULL;
     }
@@ -151,7 +151,7 @@ void cut_letter(
 
 int main() {
     const char *input_filename =
-           ".cache/save_image/source_image.bmp";
+           ".cache/image_save/source_image.bmp";
     const char *output_filename = "lettre1.bmp";
 
     Image *image = read_image_bmp(input_filename);
