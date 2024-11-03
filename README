@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-HOW TO USE:
-
-(Rmember to make)
+//////////HOW TO USE\\\\\\\\\\
 
 ---SOLVER---
 iput:
@@ -23,4 +20,17 @@ output:
 input:
 	./interface
 output:
-	#affiche une image
+	#display new window
+	#in new window write path_name
+	#display picture
+
+---Image_save---
+input:
+	./image_save
+output:
+	
+
+input:
+	./image_save2 "image_path" "x_coordonates" "y_coordonates"
+output:
+	
