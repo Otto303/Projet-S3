@@ -147,7 +147,8 @@ void decouper_lettre(
 }
 
 int main() {
-    const char *input_filename = "source_image.bmp"; 
+    const char *input_filename = 
+	   ".cache/sauvegarde_image/source_image.bmp";
     const char *output_filename = "lettre1.bmp";     
 
     Image *image = lire_image_bmp(input_filename);
