@@ -17,5 +17,5 @@ interface : .cache/Interface/*.c .cache/Interface/*.h
 sauvegarde_image1 : .cache/sauvegarde_image/*.c
 	gcc $(CFLAGS) -o sauvegarde_image1 .cache/sauvegarde_image/*.c
 
-sauvegarde_image2 : .cache/sauvegarde_image2/*.c
-	gcc $(CFLAGS) -o sauvegarde_image2 .cache/sauvegarde_image2/*.c $(LIBS)
+sauvegarde_image2 : .cache/sauvegarde_image_second/*.c
+	gcc $(CFLAGS) -o sauvegarde_image2 .cache/sauvegarde_image_second/*.c $(LIBS)
