@@ -50,9 +50,12 @@ void noirEtBlanc(SDL_Surface *surface) {
             Uint8 gray = (Uint8)((r + g + b) / 3);
 
             float contrastFactor = 1.5f; 
-	    r = (Uint8)((gray + (r - gray) * contrastFactor) > 255 ? 255 : (gray + (r - gray) * contrastFactor));
-            g = (Uint8)((gray + (g - gray) * contrastFactor) > 255 ? 255 : (gray + (g - gray) * contrastFactor));
-            b = (Uint8)((gray + (b - gray) * contrastFactor) > 255 ? 255 : (gray + (b - gray) * contrastFactor));
+	    r = (Uint8)((gray + (r - gray) * contrastFactor) > 255 ? 255
+			: (gray + (r - gray) * contrastFactor));
+        g = (Uint8)((gray + (g - gray) * contrastFactor) > 255 ? 255
+			: (gray + (g - gray) * contrastFactor));
+        b = (Uint8)((gray + (b - gray) * contrastFactor) > 255 ? 255
+			: (gray + (b - gray) * contrastFactor));
 
             pixels[y * width + x] = SDL_MapRGB(format, r, g, b);
         }
@@ -74,27 +77,28 @@ void open_window() {
     int pathLength = 0;
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        printf("SDL n'a pas pu être initialisé: %s\n", SDL_GetError());
+        printf("SDL could not be initialized: %s\n", SDL_GetError());
         return;
     }
 
     if (IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG) == 0) {
-        printf("L'image n'est pas au format JPG ou PNG: %s\n", IMG_GetError());
+        printf("Image is not on format JPG or PNG: %s\n", IMG_GetError());
         SDL_Quit();
         return;
     }
 
     if (TTF_Init() == -1) {
-        printf("TTF n'a pas pu être initialisé: %s\n", TTF_GetError());
+        printf("TTF could not be initialized: %s\n", TTF_GetError());
         SDL_Quit();
         return;
     }
 
     SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
 
-    window = SDL_CreateWindow("OCR by OCR PRO MAX", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow("OCR by OCR PRO MAX", SDL_WINDOWPOS_CENTERED,
+			SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_SHOWN);
     if (!window) {
-        printf("La fenêtre n'a pas pu être créée: %s\n", SDL_GetError());
+        printf("Window could not be created: %s\n", SDL_GetError());
         TTF_Quit();
         IMG_Quit();
         SDL_Quit();
@@ -103,7 +107,7 @@ void open_window() {
 
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (!renderer) {
-        printf("Le renderer n'a pas pu être créé: %s\n", SDL_GetError());
+        printf("Render could not be created: %s\n", SDL_GetError());
         SDL_DestroyWindow(window);
         TTF_Quit();
         IMG_Quit();
@@ -111,9 +115,10 @@ void open_window() {
         return;
     }
 
-    TTF_Font *font = TTF_OpenFont(".cache/Interface/Roboto/Roboto-Regular.ttf", 24);
+    TTF_Font *font =
+		TTF_OpenFont(".cache/Interface/Roboto/Roboto-Regular.ttf", 24);
     if (!font) {
-        printf("La police n'a pas pu être chargée: %s\n", TTF_GetError());
+        printf("Font could not be loaded: %s\n", TTF_GetError());
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
         TTF_Quit();
@@ -122,9 +127,11 @@ void open_window() {
         return;
     }
 
-    TTF_Font *titleFont = TTF_OpenFont(".cache/Interface/Roboto/Roboto-Regular.ttf", 48);
+    TTF_Font *titleFont =
+		TTF_OpenFont(".cache/Interface/Roboto/Roboto-Regular.ttf", 48);
     if (!titleFont) {
-        printf("La police pour le titre n'a pas pu être chargée: %s\n", TTF_GetError());
+        printf("Title font could not be loaded: %s\n",
+				TTF_GetError());
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
         TTF_Quit();
@@ -155,7 +162,8 @@ void open_window() {
                 else if (e.key.keysym.sym == SDLK_RETURN) {
                     SDL_Surface *imageSurface = IMG_Load(imagePath);
                     if (!imageSurface) {
-                        printf("L'image n'a pas pu être chargée: %s\n", IMG_GetError());
+                        printf("Image could not be loaded: %s\n",
+								IMG_GetError());
                     }
                     else {
 			 //noirEtBlanc(imageSurface);
@@ -164,9 +172,11 @@ void open_window() {
                             SDL_DestroyTexture(texture);
                         }
 
-                        texture = SDL_CreateTextureFromSurface(renderer, imageSurface);
+                        texture = SDL_CreateTextureFromSurface(renderer,
+								imageSurface);
                         if (!texture) {
-                            printf("La texture n'a pas pu être créée : %s\n", SDL_GetError());
+                            printf("Texture could not be created : %s\n",
+									SDL_GetError());
                         }
                         SDL_FreeSurface(imageSurface);
                         enterPressed = 1;
@@ -183,9 +193,11 @@ void open_window() {
         SDL_RenderClear(renderer);
 	if (!imageLoaded) {
 		SDL_Color titleColor = { 0, 0, 0, 255 };
-                SDL_Surface *titleSurface = TTF_RenderText_Solid(titleFont, "Welcome to OCR by OCR PRO MAX", titleColor);
+                SDL_Surface *titleSurface = TTF_RenderText_Solid(titleFont,
+						"Welcome to OCR by OCR PRO MAX", titleColor);
                 if (titleSurface) {
-                titleTexture = SDL_CreateTextureFromSurface(renderer, titleSurface);
+                titleTexture = SDL_CreateTextureFromSurface(renderer,
+						titleSurface);
                 SDL_FreeSurface(titleSurface);
                 	if (titleTexture) {
 				SDL_Rect titleRect;
@@ -193,7 +205,8 @@ void open_window() {
                 		titleRect.y = 10;
                 		titleRect.w = titleSurface->w;
                 		titleRect.h = titleSurface->h;
-                		SDL_RenderCopy(renderer, titleTexture, NULL, &titleRect);
+                		SDL_RenderCopy(renderer, titleTexture,
+								NULL, &titleRect);
 			}
 		}
         }
@@ -225,15 +238,19 @@ void open_window() {
 
         if (!imageLoaded && pathLength > 0) {
             SDL_Color textColor = { 0, 0, 0, 255 };
-            SDL_Surface *textSurface = TTF_RenderText_Solid(font, imagePath, textColor);
+            SDL_Surface *textSurface = TTF_RenderText_Solid(font,
+					imagePath, textColor);
             if (textSurface) {
-                textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
+                textTexture =
+					SDL_CreateTextureFromSurface(renderer, textSurface);
                 SDL_FreeSurface(textSurface);
 
                 if (textTexture) {
                     int textWidth, textHeight;
-                    SDL_QueryTexture(textTexture, NULL, NULL, &textWidth, &textHeight);
-                    SDL_Rect textRect = {10, windowHeight - textHeight - 10, textWidth, textHeight };
+                    SDL_QueryTexture(textTexture, NULL, NULL,
+							&textWidth, &textHeight);
+                    SDL_Rect textRect = {10, windowHeight - textHeight - 10,
+						textWidth, textHeight };
                     SDL_RenderCopy(renderer, textTexture, NULL, &textRect);
                 }
             }

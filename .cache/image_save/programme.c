@@ -79,7 +79,7 @@ void detecter_dimensions_lettre(
     *lettre_width = max_x - x + 1;
     *lettre_height = max_y - y + 1;
 
-    printf("Dimensions de la lettre détectées : largeur = %d, hauteur = %d\n",
+    printf("Dimensions of detected letter : width = %d, height = %d\n",
            *lettre_width, *lettre_height);
 }
 
@@ -110,7 +110,7 @@ void decouper_lettre(
 
     FILE *file = fopen(output_filename, "wb");
     if (!file) {
-        printf("Erreur : impossible de créer le fichier.\n");
+        printf("Error : File could not be created\n");
         free(data);
         return;
     }
@@ -146,7 +146,7 @@ void decouper_lettre(
             output_row_padded * lettre_height, file);
     fclose(file);
     free(data);
-    printf("Lettre sauvegardée : %s\n", output_filename);
+    printf("Letter saved : %s\n", output_filename);
 }
 
 int main() {
@@ -159,7 +159,7 @@ int main() {
         return 1;
     }
 
-    printf("Début du découpage de la lettre...\n");
+    printf("Stating cutting letter...\n");
     decouper_lettre(image, 10, 5, output_filename);
 
     free(image->data);
