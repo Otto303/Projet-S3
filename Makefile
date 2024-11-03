@@ -1,6 +1,6 @@
 CFLAGS = -Wall -Wextra
 
-TARGETS = solver network
+TARGETS = solver network interface
 
 all: $(TARGETS)
 
@@ -12,3 +12,6 @@ network : .cache/NeuronNetwork/*.c .cache/NeuronNetwork/*.h
 
 sauvegarde_image : .cache/sauvegarde_image/*.c .cache/sauvegarde_image/*.h
 	gcc $(CFLAGS) -o sauvegarde_image .cache/sauvegarde_image/*.c .cache/sauvegarde_image/*.h
+
+interface : .cache/Interface/*.c .cache/Interface/*.h
+	gcc $(CFLAGS) -o interface .cache/Interface/*.c .cache/Interface/*.h -lSDL2_image -lSDL2_ttf
