@@ -84,11 +84,11 @@ void detect_dimensions_letter(
 }
 
 // Function to save the letter as an image
-void cut_lettre(
+void cut_letter(
     Image *image, int x, int y, const char *output_filename
 ) {
     int letter_width, letter_height;
-    detect_dimensions_letter(image, x, y, &lettre_width, &lettre_height);
+    detect_dimensions_letter(image, x, y, &letter_width, &letter_height);
 
     if (x + letter_width > (int)image->width)
         letter_width = image->width - x;
@@ -97,7 +97,7 @@ void cut_lettre(
 
     int row_padded = (image->width * 3 + 3) & (~3);
     unsigned char *data = (unsigned char*)
-            malloc(lettre_width * letter_height * 3);
+            malloc(letter_width * letter_height * 3);
 
     for (int i = 0; i < letter_height; i++) {
         for (int j = 0; j < letter_width; j++) {
@@ -134,7 +134,7 @@ void cut_lettre(
     header[18] = (unsigned char)(letter_width);
     header[19] = (unsigned char)(letter_width >> 8);
     header[20] = (unsigned char)(letter_width >> 16);
-    header[21] = (unsigned char)(lettee_width >> 24);
+    header[21] = (unsigned char)(letter_width >> 24);
 
     header[22] = (unsigned char)(letter_height);
     header[23] = (unsigned char)(letter_height >> 8);
