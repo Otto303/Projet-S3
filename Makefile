@@ -1,6 +1,6 @@
 CFLAGS = -Wall -Wextra
 
-TARGETS = solver network  sauvegarde_image interface
+TARGETS = solver network interface sauvegarde_image
 
 all: $(TARGETS)
 LIBS = -lSDL2 -lSDL2_image -lSDL2_ttf
