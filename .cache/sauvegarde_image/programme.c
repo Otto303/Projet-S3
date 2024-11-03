@@ -57,19 +57,13 @@ void detecter_dimensions_lettre(
     Image *image, int x, int y, int *lettre_width, int *lettre_height
 ) {
     int row_padded = (image->width * 3 + 3) & (~3);
-    size_t max_x = x, max_y = y;
+    int max_x = x, max_y = y;
 
-<<<<<<< HEAD
-    // Parcourir la région autour du point (x, y) pour trouver les limites
-    for (size_t i = y; i < image->height; i++) {
-        for (size_t j = x; j < image->width; j++) {
-=======
-    for (int i = y; i < image->height; i++) {
-        for (int j = x; j < image->width; j++) {
->>>>>>> origin/Baptiste
+    for (int i = y; i < (int)image->height; i++) {
+        for (int j = x; j < (int)image->width; j++) {
             int pixel_index = i * row_padded + j * 3;
-            if (pixel_index >= row_padded * image->height) continue;
-
+            if (pixel_index >= (int)(row_padded * image->height))
+                    continue;
             unsigned char blue = image->data[pixel_index];
             unsigned char green = image->data[pixel_index + 1];
             unsigned char red = image->data[pixel_index + 2];
@@ -95,9 +89,9 @@ void decouper_lettre(
     int lettre_width, lettre_height;
     detecter_dimensions_lettre(image, x, y, &lettre_width, &lettre_height);
 
-    if (x + lettre_width > image->width)
+    if (x + lettre_width > (int)image->width)
         lettre_width = image->width - x;
-    if (y + lettre_height > image->height)
+    if (y + lettre_height > (int)image->height)
         lettre_height = image->height - y;
 
     int row_padded = (image->width * 3 + 3) & (~3);
@@ -153,8 +147,9 @@ void decouper_lettre(
 }
 
 int main() {
-    const char *input_filename = "source_image.bmp"; 
-    const char *output_filename = "lettre1.bmp";     
+    const char *input_filename =
+           ".cache/sauvegarde_image/source_image.bmp";
+    const char *output_filename = "lettre1.bmp";
 
     Image *image = lire_image_bmp(input_filename);
     if (!image) {
@@ -168,4 +163,3 @@ int main() {
     free(image);
     return 0;
 }
-
