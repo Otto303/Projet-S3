@@ -2,35 +2,35 @@
 
 ---SOLVER---
 iput:
-	./solver "grid_name" "word_to_find"
+	./solver 'grid_name' 'word_to_find'
 output:
-	("first_letter_coordonates")("last_letter_coordonates")
+	('first_letter_coordonates')('last_letter_coordonates')
 
 ---Network---
 input:
 	./network 0	#To not evaluate for each epoch (faster)
 	./network 1	#To evaluate for each epoch (slower, but displays advencement of training)
 output:
-	Epoch "current_epoch_number": "training_test_successful"/"training_test_total"	#if evaluate
-	Epoch "current_epoch_number" complete						#otherwise
-	Correct results: "training_test_successful" out of "training_test_total"
-	Input: "training_test_inputs", Expected output: "training_test_expected",Network output: "training_test_output"	#for each element in training_test
+	Epoch 'current_epoch_number': 'number_training_test_successful'/'number_training_test_total'	#if evaluate
+	Epoch 'current_epoch_number' complete								#otherwise
+	Correct results: 'number_training_test_successful' out of 'number_training_test_total'
+	Input: 'training_test_inputs', Expected output: 'training_test_expected',Network output: 'training_test_output'	#for each element in training_test
 
 ---Interface---
 input:
 	./interface
 output:
-	#display new window
-	#in new window write path_name
-	#display picture
+	#displays new window
+	#in new window, write 'path_name'
+	#displays picture
 
 ---Image_save---
 input:
 	./image_save
 output:
-	#save picture in new file
+	#saves 1st letter of a predefined image as a new image
 
 input:
-	./image_save2 "image_path" "x_coordonates" "y_coordonates"
+	./image_save2 'image_path' 'x_coordonates' 'y_coordonates'
 output:
-	
+	#saves 1st letter of image starting from given coordonates as a new image
