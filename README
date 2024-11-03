@@ -28,7 +28,7 @@ output:
 input:
 	./image_save
 output:
-	
+	#save picture in new file
 
 input:
 	./image_save2 "image_path" "x_coordonates" "y_coordonates"
