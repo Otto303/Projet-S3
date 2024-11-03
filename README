@@ -17,3 +17,9 @@ output:
 	Epoch "current_epoch_number" complete						#otherwise
 	Correct results: "training_test_successful" out of "training_test_total"
 	Input: "training_test_inputs", Expected output: "training_test_expected",Network output: "training_test_output"	#for each element in training_test
+
+---Interface---
+input:
+	./interface
+output:
+	#affiche une image
