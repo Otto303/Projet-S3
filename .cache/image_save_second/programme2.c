@@ -9,7 +9,7 @@ int is_dark_pixel(Uint8 r, Uint8 g, Uint8 b) {
 }
 
 // Detect bounds of a single letter from a specific point, limiting bounds
-SDL_Rect detecter_limites_lettre(SDL_Surface *surface, int x, int y) {
+SDL_Rect detect_limits_letter(SDL_Surface *surface, int x, int y) {
     SDL_Rect letter = {x, y, 0, 0};
     int left = x, right = x, top = y, bottom = y;
 
@@ -37,7 +37,7 @@ SDL_Rect detecter_limites_lettre(SDL_Surface *surface, int x, int y) {
     return letter;
 }
 
-int enregistrer_lettre(SDL_Surface *surface, SDL_Rect letter,
+int save_letter(SDL_Surface *surface, SDL_Rect letter,
                        const char* filename) {
     SDL_Surface *letter_surface = SDL_CreateRGBSurface(
         0, letter.w, letter.h, 24,
@@ -107,10 +107,10 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    SDL_Rect letter = detecter_limites_lettre(image, coord_x, coord_y);
+    SDL_Rect letter = detect_limits_letter(image, coord_x, coord_y);
 
     const char* output_filename = "extracted_letter.bmp";
-    if (enregistrer_lettre(image, letter, output_filename) == 0) {
+    if (save_letter(image, letter, output_filename) == 0) {
         printf("Letter successfully saved as '%s'\n",
                output_filename);
     } else {

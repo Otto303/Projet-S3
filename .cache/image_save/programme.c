@@ -20,7 +20,7 @@ unsigned int read_uint32_le(FILE *file) {
 }
 
 // Function to read a BMP image and convert it to a custom RGB format
-Image* lire_image_bmp(const char *filename) {
+Image* read_image_bmp(const char *filename) {
     FILE *bmp_file = fopen(filename, "rb");
     if (!bmp_file) {
         printf("Erreur : impossible d'ouvrir le fichier BMP.\n");
@@ -53,7 +53,7 @@ Image* lire_image_bmp(const char *filename) {
 }
 
 // Function to detect letter dimensions
-void detecter_dimensions_lettre(
+void detect_dimensions_letter(
     Image *image, int x, int y, int *lettre_width, int *lettre_height
 ) {
     int row_padded = (image->width * 3 + 3) & (~3);
@@ -84,25 +84,25 @@ void detecter_dimensions_lettre(
 }
 
 // Function to save the letter as an image
-void decouper_lettre(
+void cut_lettre(
     Image *image, int x, int y, const char *output_filename
 ) {
-    int lettre_width, lettre_height;
-    detecter_dimensions_lettre(image, x, y, &lettre_width, &lettre_height);
+    int letter_width, letter_height;
+    detect_dimensions_letter(image, x, y, &lettre_width, &lettre_height);
 
-    if (x + lettre_width > (int)image->width)
-        lettre_width = image->width - x;
-    if (y + lettre_height > (int)image->height)
-        lettre_height = image->height - y;
+    if (x + letter_width > (int)image->width)
+        letter_width = image->width - x;
+    if (y + letter_height > (int)image->height)
+        letter_height = image->height - y;
 
     int row_padded = (image->width * 3 + 3) & (~3);
     unsigned char *data = (unsigned char*)
-            malloc(lettre_width * lettre_height * 3);
+            malloc(lettre_width * letter_height * 3);
 
-    for (int i = 0; i < lettre_height; i++) {
-        for (int j = 0; j < lettre_width; j++) {
+    for (int i = 0; i < letter_height; i++) {
+        for (int j = 0; j < letter_width; j++) {
             for (int k = 0; k < 3; k++) {
-                data[(i * lettre_width + j) * 3 + k] =
+                data[(i * letter_width + j) * 3 + k] =
                     image->data[((y + i) * row_padded + (x + j) * 3 + k)];
             }
         }
@@ -115,7 +115,7 @@ void decouper_lettre(
         return;
     }
 
-    int output_row_padded = (lettre_width * 3 + 3) & (~3);
+    int output_row_padded = (letter_width * 3 + 3) & (~3);
     unsigned char header[54] = {
         0x42, 0x4D, 0, 0, 0, 0, 0, 0, 0, 0,
         54, 0, 0, 0, 40, 0, 0, 0,
@@ -125,25 +125,25 @@ void decouper_lettre(
         0, 0, 0, 0, 0, 0, 0, 0
     };
 
-    int filesize = 54 + output_row_padded * lettre_height;
+    int filesize = 54 + output_row_padded * letter_height;
     header[2] = (unsigned char)(filesize);
     header[3] = (unsigned char)(filesize >> 8);
     header[4] = (unsigned char)(filesize >> 16);
     header[5] = (unsigned char)(filesize >> 24);
 
-    header[18] = (unsigned char)(lettre_width);
-    header[19] = (unsigned char)(lettre_width >> 8);
-    header[20] = (unsigned char)(lettre_width >> 16);
-    header[21] = (unsigned char)(lettre_width >> 24);
+    header[18] = (unsigned char)(letter_width);
+    header[19] = (unsigned char)(letter_width >> 8);
+    header[20] = (unsigned char)(letter_width >> 16);
+    header[21] = (unsigned char)(lettee_width >> 24);
 
-    header[22] = (unsigned char)(lettre_height);
-    header[23] = (unsigned char)(lettre_height >> 8);
-    header[24] = (unsigned char)(lettre_height >> 16);
-    header[25] = (unsigned char)(lettre_height >> 24);
+    header[22] = (unsigned char)(letter_height);
+    header[23] = (unsigned char)(letter_height >> 8);
+    header[24] = (unsigned char)(letter_height >> 16);
+    header[25] = (unsigned char)(letter_height >> 24);
 
     fwrite(header, sizeof(unsigned char), 54, file);
     fwrite(data, sizeof(unsigned char),
-            output_row_padded * lettre_height, file);
+            output_row_padded * letter_height, file);
     fclose(file);
     free(data);
     printf("Letter saved : %s\n", output_filename);
@@ -151,16 +151,16 @@ void decouper_lettre(
 
 int main() {
     const char *input_filename =
-           ".cache/sauvegarde_image/source_image.bmp";
+           ".cache/save_image/source_image.bmp";
     const char *output_filename = "lettre1.bmp";
 
-    Image *image = lire_image_bmp(input_filename);
+    Image *image = read_image_bmp(input_filename);
     if (!image) {
         return 1;
     }
 
     printf("Stating cutting letter...\n");
-    decouper_lettre(image, 10, 5, output_filename);
+    cut_letter(image, 10, 5, output_filename);
 
     free(image->data);
     free(image);
