@@ -68,7 +68,8 @@ void detecter_dimensions_lettre(
             unsigned char green = image->data[pixel_index + 1];
             unsigned char red = image->data[pixel_index + 2];
 
-            if (red < SEUIL_PIXEL || green < SEUIL_PIXEL || blue < SEUIL_PIXEL) {
+            if (red < SEUIL_PIXEL || green < SEUIL_PIXEL || blue < SEUIL_PIXEL)
+            {
                 if (j > max_x) max_x = j;
                 if (i > max_y) max_y = i;
             }
@@ -95,7 +96,8 @@ void decouper_lettre(
         lettre_height = image->height - y;
 
     int row_padded = (image->width * 3 + 3) & (~3);
-    unsigned char *data = (unsigned char*)malloc(lettre_width * lettre_height * 3);
+    unsigned char *data = (unsigned char*)
+            malloc(lettre_width * lettre_height * 3);
 
     for (int i = 0; i < lettre_height; i++) {
         for (int j = 0; j < lettre_width; j++) {
@@ -140,7 +142,8 @@ void decouper_lettre(
     header[25] = (unsigned char)(lettre_height >> 24);
 
     fwrite(header, sizeof(unsigned char), 54, file);
-    fwrite(data, sizeof(unsigned char), output_row_padded * lettre_height, file);
+    fwrite(data, sizeof(unsigned char),
+            output_row_padded * lettre_height, file);
     fclose(file);
     free(data);
     printf("Lettre sauvegardée : %s\n", output_filename);
