@@ -97,11 +97,11 @@ void sauvegarder_image_bmp(const char *filename, unsigned char *data, int width,
 // Fonction pour détecter les dimensions de la lettre
 void detecter_dimensions_lettre(Image *image, int x, int y, int *lettre_width, int *lettre_height) {
     int row_padded = (image->width * 3 + 3) & (~3);
-    int max_x = x, max_y = y;
+    size_t max_x = x, max_y = y;
 
     // Parcourir la région autour du point (x, y) pour trouver les limites
-    for (int i = y; i < image->height; i++) {
-        for (int j = x; j < image->width; j++) {
+    for (size_t i = y; i < image->height; i++) {
+        for (size_t j = x; j < image->width; j++) {
             int pixel_index = i * row_padded + j * 3;
             unsigned char blue = image->data[pixel_index];
             unsigned char green = image->data[pixel_index + 1];
