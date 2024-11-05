@@ -1,14 +1,12 @@
 #include <stdlib.h>
 #include <math.h>
 
-//return random following Gaussian distributions
-//with mean 0 and standard deviation 1
-double randn()
+double xavier(double inp, double out) //create random with xavier initialisation
 {
-	double u = ((double) rand() / RAND_MAX); //Random between 0 and 1
-	double v = ((double) rand() / RAND_MAX);
-	double z = sqrt(-2.0 * log(u)) * cos(2.0 * M_PI * v);
-	return z;
+	double x = sqrt(6.0/(inp + out)); //for the varience
+	double nb = (rand() / (double)RAND_MAX) * 2 * x - x; //create random between -x & x
+	//printf("test:%f\n",nb);
+	return nb;
 }
 
 typedef struct {
@@ -40,7 +38,9 @@ Network* init_network(int *sizes, size_t num_layers)
 		int y = sizes[i + 1];
 		net->biases[i] = malloc(y * sizeof(double));
 		for(int j = 0; j < y; j++)
-			net->biases[i][j] = randn();
+		{
+			net->biases[i][j] = 0;
+		}
 	}
 
 	//Initialize weights
@@ -54,7 +54,7 @@ Network* init_network(int *sizes, size_t num_layers)
 		{
 			net->weights[i][j] = malloc(x * sizeof(double));
 			for(size_t k = 0; k < x; k++)
-				net->weights[i][j][k] = randn();
+				net->weights[i][j][k] = xavier(sizes[0],sizes[num_layers - 1]);
 		}
 	}
 

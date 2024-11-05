@@ -40,6 +40,12 @@ void update_mini_batch(Network *net, Data *mini_batch,
 		double **delta_nabla_b[net->num_layers - 1];
 		double **delta_nabla_w[net->num_layers - 1];
 
+		for(size_t i = 0; i < net->num_layers - 1; i++)
+		{
+			delta_nabla_b[i] = matrix_zeros(net->sizes[i + 1], 1);
+			delta_nabla_w[i] = matrix_zeros(net->sizes[i + 1], net->sizes[i]);
+		}
+
 		//Call backprop to calculate delta_nabla_b & delta_nabla_w
 		backprop(net, mini_batch[i].x, mini_batch[i].y,
 				delta_nabla_b, delta_nabla_w);
@@ -55,7 +61,6 @@ void update_mini_batch(Network *net, Data *mini_batch,
 						delta_nabla_w[j][k][l];
             		}
         	}
-
 		//Free memory of delta_nabla_b & delta_nabla_w
 		for(size_t j = 0; j < net->num_layers - 1; j++)
 		{
@@ -74,11 +79,11 @@ void update_mini_batch(Network *net, Data *mini_batch,
 	{
 		for(size_t j = 0; j < net->sizes[i + 1]; j++)
 		{
-			net->biases[i][j] -= (eta / mini_batch_size)
+			net->biases[i][j] -= eta / mini_batch_size
 						* nabla_b[i][j][0];
 			for(size_t k = 0; k < net->sizes[i]; k++)
 				net->weights[i][j][k] -=
-					(eta / mini_batch_size)
+					eta / mini_batch_size
 						* nabla_w[i][j][k];
 		}
 	}
