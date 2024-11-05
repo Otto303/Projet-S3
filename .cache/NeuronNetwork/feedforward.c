@@ -1,50 +1,28 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "network.h"
 #include "sigmoid.h"
 
-void matrix_vector_dot(double **matrix, double *vector,
-			double *result, size_t rows, size_t cols)
-{
-	for(size_t i = 0; i < rows; i++)
-	{
-		result[i] = 0.0;
-		for (size_t j = 0; j < cols; j++)
-			result[i] += matrix[i][j] * vector[j];
-	}
-}
-
-void add_vect(double *A, double *B, size_t size)
-{
-    for(size_t i = 0; i < size; i++)
-        A[i] += B[i];
-}
-
 double *feedforward(Network *net, double *input)
 {
-	double *activation = (double *)malloc(net->sizes[0] * sizeof(double));
+	double *activation = input;
+	double *new_activations;
 
-	for(size_t i = 0; i < net->sizes[0]; i++)
-		activation[i] = input[i];
-
-	for(size_t layer = 1; layer < net->num_layers; layer++)
+	for(size_t layer = 0; layer < net->num_layers - 1; layer++)
 	{
-		double *z = malloc(net->sizes[layer] * sizeof(double));
-		double *next_activation = 
-			malloc(net->sizes[layer] * sizeof(double));
+		size_t next_layer_size = net->sizes[layer + 1];
+		new_activations = malloc(next_layer_size * sizeof(double));
 
-		matrix_vector_dot(net->weights[layer - 1], activation, z,
-			net->sizes[layer], net->sizes[layer - 1]);
-
-		for(size_t j = 0; j < net->sizes[layer]; j++)
+		for(size_t j = 0; j < next_layer_size; j++)
 		{
-			z[j] += net->biases[layer - 1][j];
-			next_activation[j] = sigmoid(z[j]);
+			double z = net->biases[layer][j];
+
+			for(size_t k = 0; k < net->sizes[layer]; k++)
+				z += net->weights[layer][j][k] * activation[k];
+
+			new_activations[j] = sigmoid(z);
 		}
-
-		free(z);
-		free(activation);
-		activation = next_activation;
+		activation = new_activations;
 	}
-
-	return activation;
+    return new_activations;
 }

@@ -7,7 +7,6 @@
 #include "feedforward.h"
 #include "evaluate.h"
 
-
 int main(int argc, char *argv[])
 {
 	if (argc < 2)
@@ -50,9 +49,9 @@ int main(int argc, char *argv[])
 	training_data[3].y[1] = 1;
 	
 	//Parameters for training
-	int epochs = 1000000000;
+	int epochs = 10000;
 	int mini_batch_size = 4;
-	double eta = 0.9;
+	double eta = 0.8;
 
 	//Training with stochastic gradient descent
 	if(argv[1][0] == '0')
@@ -64,7 +63,7 @@ int main(int argc, char *argv[])
 	// Evaluation of network with training data
 	int correct_results = evaluate(net, training_data, 4);
 	printf("Correct results: %d out of 4\n", correct_results);
-	
+
 	//Displays final results
 	for(size_t i = 0; i < 4; i++)
 	{
@@ -77,11 +76,12 @@ int main(int argc, char *argv[])
 
 		printf("Network output: %ld\n",
 			argmax(output,net->sizes[net->num_layers-1]));
+		
 		free(output);
 	}
 
 	for(size_t i = 0; i < 4; i++)
 		free(training_data[i].x);
-	
+
 	return 0;
 }

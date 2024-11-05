@@ -1,11 +1,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <time.h>
 #include "minibatch.h"
 #include "evaluate.h"
 
 void shuffle(Data *data, int n)
 {
+	srand(time(NULL));
 	for(int i = n - 1; i > 0; i--)
 	{
 		int j = rand() % (i + 1);

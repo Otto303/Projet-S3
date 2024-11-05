@@ -1,6 +1,6 @@
 #include <stddef.h>
 
-double randn();
+double xavier();
 
 #ifndef NETWORK_H
 #define NETWORK_H
