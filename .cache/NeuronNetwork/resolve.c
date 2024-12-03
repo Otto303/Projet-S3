@@ -5,29 +5,33 @@
 #include "Network/feedforward.h"
 #include "Network/evaluate.h"
 #include "Network/save.h"
+#include "bmp_to_array.h"
 
 //takes file of network, and the inputs to resolve
 int main(int argc, char *argv[])
 {
 
-	if (argc < 4)
-		errx(1,"Not enough arguments\n");
+	if (argc != 3)
+		errx(1,"Not correct argument number\n");
 
+	// Initialize array
+	size_t width;
+	size_t height;
+	double* pixelArray = loadImageAsArray(argv[2], &width, &height);
+	if (pixelArray == NULL)
+		return EXIT_FAILURE;
+	
 	//Initialize network
 	Network* net = load_network(argv[1]);
 	if(net == NULL)
 		return EXIT_FAILURE;
 
-	//Initialize both arguments
-	double data[] = { (double)argv[2][0] - 48, (double)argv[3][0] - 48};
-
 	//Calculate result
-	double *output = feedforward(net, data);
+	double *output = feedforward(net, pixelArray);
 	size_t res = argmax(output,net->sizes[net->num_layers-1]);
 	
 	//Displays final results
-	printf("Input: (%.0f, %.0f)\n", data[0], data[1]);
-	printf("Output: %ld\n", res);
+	printf("Output: %c\n", (char)res + 'A');
 	
 	free(output);
 	free_network(net);	

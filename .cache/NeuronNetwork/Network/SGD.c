@@ -37,11 +37,11 @@ void SGD(Network *net, Data *training_data, int n,
 		}
 		
 		printf("Epoch %d complete\n",j);
-		if (j % 1000 == 0)
+		if (j % 100 == 0)
 		{
 			int correct = evaluate(net, test_data, n_test);
 			printf("results: %d/%d\n", correct, n_test);
-			if (j % 2000 == 0)
+			if (j % 200 == 0)
 				save_network(net,"nw_2");
 			else save_network(net,"nw_1");
 		}

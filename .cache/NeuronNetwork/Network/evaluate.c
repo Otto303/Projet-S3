@@ -27,7 +27,7 @@ int evaluate(Network *net, Data *test_data, size_t test_data_size)
 		double *output = feedforward(net, test_data[i].x);
 		size_t predicted = argmax(output,
 			net->sizes[net->num_layers - 1]);
-		if(predicted == argmax(test_data[i].y,2))
+		if(predicted == argmax(test_data[i].y,26))
 			correct_results++;
 		free(output);
 	}

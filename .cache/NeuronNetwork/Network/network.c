@@ -37,9 +37,7 @@ Network* init_network(size_t *sizes, size_t num_layers)
 		int y = sizes[i + 1];
 		net->biases[i] = malloc(y * sizeof(double));
 		for(int j = 0; j < y; j++)
-		{
 			net->biases[i][j] = 0;
-		}
 	}
 
 	//Initialize weights

@@ -46,7 +46,8 @@ double* loadImageAsArray(const char* filename, size_t* width, size_t* height)
 
 		//Normalize grayscale between 0 and 1
 		//double grayscale=(0.299 * r + 0.587 * g + 0.114 * b) / 255.0;
-		array[i] = r / 255.0;
+		if (r > 128) array[i] = 1;
+		else array[i] = 0;
 	}
 
 	SDL_FreeSurface(imageSurface);
@@ -54,7 +55,7 @@ double* loadImageAsArray(const char* filename, size_t* width, size_t* height)
 
 	return array;
 }
-
+/*
 int main(int argc, char* argv[])
 {
 	if(argc != 2)
@@ -85,4 +86,4 @@ int main(int argc, char* argv[])
 
 	return 0;
 }
-
+*/
