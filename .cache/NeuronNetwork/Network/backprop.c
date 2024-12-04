@@ -19,9 +19,9 @@ void backprop(Network *net, double *x, double *y,
 {
 
 	//Feedforward
-	size_t temp = 0;
-	for (size_t i = 0; i < net->num_layers; i++) temp += net->sizes[i];
-	double **activations = malloc(temp * sizeof(double));
+	//size_t temp = 0;
+	//for (size_t i = 0; i < net->num_layers; i++) temp += net->sizes[i];
+	double **activations = malloc(net->num_layers * sizeof(double *));
 	double **zs = malloc((net->num_layers - 1) * sizeof(double *));
 
 	//Initialize activation with input x

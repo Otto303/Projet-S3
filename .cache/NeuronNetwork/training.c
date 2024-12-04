@@ -27,8 +27,8 @@ int main(int argc, char *argv[])
 		printf("Creating network from scratch...\n");
 		size_t sizes[] = {784, 128, 26};
 		net = init_network(sizes, 3);
+		printf("Network created\n");
 	}
-	printf("Network created\n");
 	
 	
 	size_t training_size;
