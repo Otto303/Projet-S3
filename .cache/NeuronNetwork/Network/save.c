@@ -57,14 +57,28 @@ Network* load_network(const char *filename)
 		return NULL;
 	}
 
+	int fscan_res; // Result of fscan	
+	
 	//Load number of layer
 	size_t num_layers = 0;
-	fscanf(file, "%zu", &num_layers);
+	fscan_res = fscanf(file, "%zu", &num_layers);
+	if (fscan_res != 1)
+	{
+		printf("Unable to load Network: Cannot read num_layer\n");
+		return NULL;
+	}
 	size_t sizes[num_layers];
 
 	//Load size for each layer
 	for(size_t i = 0; i < num_layers; i++)
-		fscanf(file, "%zu", &sizes[i]);
+	{
+		fscan_res = fscanf(file, "%zu", &sizes[i]);
+		if (fscan_res != 1)
+		{
+			printf("Unable to load Network: Cannot read layer_size\n");
+			return NULL;
+		}
+	}
 
 	//load Network
 	Network* net = init_network(sizes, num_layers);
@@ -72,13 +86,31 @@ Network* load_network(const char *filename)
 	//Load biases
 	for(size_t i = 0; i < net->num_layers - 1; i++)
 		for(size_t j = 0; j < net->sizes[i + 1]; j++)
-			fscanf(file, "%lf", &net->biases[i][j]);
+		{
+			fscan_res = fscanf(file, "%lf", &net->biases[i][j]);
+			if (fscan_res != 1)
+			{
+				printf("Unable to load Network: Cannot read biases\n");
+				return NULL;
+			}
+		}
 
 	//Load weights
 	for(size_t i = 0; i < net->num_layers - 1; i++)
+	{
 		for(size_t j = 0; j < net->sizes[i + 1]; j++)
+		{
 			for(size_t k = 0; k < net->sizes[i]; k++)
-                		fscanf(file, "%lf", &net->weights[i][j][k]);
+			{
+                		fscan_res = fscanf(file, "%lf", &net->weights[i][j][k]);
+                		if (fscan_res != 1)
+				{
+					printf("Unable to load Network: Cannot read weights\n");
+					return NULL;
+				}
+                	}
+                }
+	}
 
 	fclose(file);
 	printf("Network loaded\n");

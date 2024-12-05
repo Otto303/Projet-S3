@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 	printf("Output: %c\n", (char)res + 'A');
 	
 	free(output);
-	free_network(net);	
+	free_network(net);
 
 	return EXIT_SUCCESS;
 }

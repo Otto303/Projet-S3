@@ -7,7 +7,12 @@
 int read_int(FILE *file)
 {
 	unsigned char bytes[4];
-	fread(bytes, sizeof(unsigned char), 4, file);
+	int fread_res = fread(bytes, sizeof(unsigned char), 4, file);
+	if (fread_res != 4)
+	{
+		printf("Error reading dataset from file\n");
+		return 0;
+	}
 	return (bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | bytes[3];
 }
 
@@ -19,14 +24,22 @@ void load_images(const char *filename, unsigned char **images, int num_images)
 	{
 		perror("Unable to open file");
 		exit(EXIT_FAILURE);
-	}
+	}	
 	read_int(file); // Skip magic number
 	read_int(file); // Skip number of images
 	read_int(file); // Skip number of rows
 	read_int(file); // Skip number of columns
 
+	int fread_res; // result of fread
 	for (int i = 0; i < num_images; i++)
-		fread(images[i], sizeof(unsigned char), IMAGE_SIZE, file);
+	{
+		fread_res = fread(images[i], sizeof(unsigned char), IMAGE_SIZE, file);
+		if (fread_res != IMAGE_SIZE)
+		{
+			printf("Error reading dataset from file\n");
+			return;
+		}
+	}
 	fclose(file);
 }
 
@@ -42,7 +55,13 @@ void load_labels(const char *filename, unsigned char *labels, int num_labels)
 	read_int(file); // Skip magic number
 	read_int(file); // Skip number of labels
 
-	fread(labels, sizeof(unsigned char), num_labels, file);
+	int fread_res; // result of fread
+	fread_res = fread(labels, sizeof(unsigned char), num_labels, file);
+	if (fread_res != num_labels)
+	{
+		printf("Error reading dataset from file\n");
+		return;
+	}
 	fclose(file);
 }
 /*

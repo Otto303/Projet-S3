@@ -25,8 +25,8 @@ int main(int argc, char *argv[])
 	if (net == NULL) //if file doesn't exists, create new network
 	{
 		printf("Creating network from scratch...\n");
-		size_t sizes[] = {784, 128, 26};
-		net = init_network(sizes, 3);
+		size_t sizes[] = {784, 256, 128, 26};
+		net = init_network(sizes, 4);
 		printf("Network created\n");
 	}
 	
@@ -34,47 +34,14 @@ int main(int argc, char *argv[])
 	size_t training_size;
 	Data* training_data;
 	generate_training_data(&training_size,&training_data);
-/*
-	//Datas for NOT(A AND B) OR (A AND B) with expected results
-	size_t training_size = 4;
-	Data training_data[training_size];
-	for(size_t i = 0; i < training_size; i++)
-	{
-        	training_data[i].x = malloc(2 * sizeof(double));
-        	training_data[i].y = malloc(2 * sizeof(double));
-        }
 
-	// NOT(0 XOR 0) = 1
-	training_data[0].x[0] = 0;
-	training_data[0].x[1] = 0;
-	training_data[0].y[0] = 0;
-	training_data[0].y[1] = 1;
-
-	// NOT(0 XOR 1) = 0
-	training_data[1].x[0] = 0;
-	training_data[1].x[1] = 1;
-	training_data[1].y[0] = 1;
-	training_data[1].y[1] = 0;
-
-	// NOT(1 XOR 0) = 0
-	training_data[2].x[0] = 1;
-	training_data[2].x[1] = 0;
-	training_data[2].y[0] = 1;
-	training_data[2].y[1] = 0;
-
-	// NOT(1 XOR 1) = 1
-	training_data[3].x[0] = 1;
-	training_data[3].x[1] = 1;
-	training_data[3].y[0] = 0;
-	training_data[3].y[1] = 1;
-*/
 	//Parameters for training
 	int mini_batch_size = training_size/100;
-	double eta = 0.5;
+	double eta = 0.05;
 
 	//Training with stochastic gradient descent
 	SGD(net, training_data, training_size, mini_batch_size, eta,
-					training_data, mini_batch_size);
+					training_data, training_size);
 
 	// Evaluation of network with training data
 	int correct_results = evaluate(net, training_data, training_size);

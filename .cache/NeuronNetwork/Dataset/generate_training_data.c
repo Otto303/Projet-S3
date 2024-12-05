@@ -34,7 +34,7 @@ int generate_training_data(size_t* training_size, Data** training_data)
 			else (*training_data)[i].x[j] = 0;
 		}
 		(*training_data)[i].y = calloc(26, sizeof(double));
-		(*training_data)[i].y[labels[i] - 'A'] = 1;
+		(*training_data)[i].y[labels[i] - 1] = 1;
 	}
 
 	 // Free allocated memory
