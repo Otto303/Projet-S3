@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "network.h"
-#include "sigmoid.h"
+#include "ReLu.h"
 
 double *feedforward(Network *net, double *input)
 {
@@ -18,7 +18,7 @@ double *feedforward(Network *net, double *input)
 			for(size_t k = 0; k < net->sizes[layer]; k++)
 				z += net->weights[layer][j][k] * activation[k];
 
-			new_activation[j] = sigmoid(z);
+			new_activation[j] = ReLu(z);
 		}
 
 		free(activation);

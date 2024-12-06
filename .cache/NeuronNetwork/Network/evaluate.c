@@ -3,7 +3,7 @@
 #include "network.h"
 #include "feedforward.h"
 
-//Find index of neuron with max activation
+// Find index of neuron with max activation
 size_t argmax(double *array, size_t length)
 {
 	size_t max_index = 0;
@@ -19,6 +19,7 @@ size_t argmax(double *array, size_t length)
 	return max_index;
 }
 
+// Calculate number of data with correct output
 int evaluate(Network *net, Data *test_data, size_t test_data_size)
 {
 	int correct_results = 0;

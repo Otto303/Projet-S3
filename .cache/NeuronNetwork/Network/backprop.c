@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "network.h"
-#include "sigmoid.h"
+#include "ReLu.h"
 
 //Calculate cost
 double *cost_derivative(double *output_activations, double *y, size_t size)
@@ -40,7 +40,7 @@ void backprop(Network *net, double *x, double *y,
 					net->weights[layer - 1][j][k]
 					* activations[layer - 1][k];
             		zs[layer - 1][j] += net->biases[layer - 1][j];
-			activations[layer][j] = sigmoid(zs[layer - 1][j]);
+			activations[layer][j] = ReLu(zs[layer - 1][j]);
 		}
 	}
 
@@ -52,7 +52,7 @@ void backprop(Network *net, double *x, double *y,
 					net->sizes[net->num_layers - 1]);
 	for(size_t j = 0; j < net->sizes[net->num_layers - 1]; j++)
         	delta[j] = cost_deriv[j]
-        		* sigmoid_prime(zs[net->num_layers - 2][j]);
+        		* ReLu_prime(zs[net->num_layers - 2][j]);
 	free(cost_deriv);
 	cost_deriv = NULL;
 
@@ -70,7 +70,7 @@ void backprop(Network *net, double *x, double *y,
 	{
 		for (size_t j = 0; j < net->sizes[net->num_layers-layer]; j++)
 		{
-			double sp = sigmoid_prime(
+			double sp = ReLu_prime(
 				zs[net->num_layers - 1 - layer][j]);
 
 			delta = realloc(delta,net->sizes[net->num_layers - layer] * sizeof(double));
@@ -100,11 +100,8 @@ void backprop(Network *net, double *x, double *y,
 	}
 	free(zs);
 	zs = NULL;
-	//printf("test_1\n");
 	free(activations[net->num_layers - 1]);
-	//printf("test_1.5\n");
 	activations[net->num_layers - 1] = NULL;
-	//printf("test_2\n");
 	free(activations);
 	activations = NULL;
 	free(delta);

@@ -1,14 +1,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-double xavier(double inp, double out) //create random with xavier initialization
-{
-	double x = sqrt(6.0/(inp + out)); //for the varience
-	double nb = (rand() / (double)RAND_MAX) * 2 * x - x; //create random between -x & x
-	return nb;
-}
-
-double He(double inp) //create random with xavier initialization
+double He(double inp) //create random with He initialization
 {
 	double x = sqrt(6.0/inp); //for the varience
 	double nb = (rand() / (double)RAND_MAX) * 2 * x - x; //create random between -x & x

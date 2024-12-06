@@ -1,4 +1,4 @@
-CFLAGS = -Wall -Wextra -O3
+CFLAGS = -Wall -Wextra -O3 #-fsanitize=address
 
 TARGETS = solver network
 

@@ -7,7 +7,7 @@
 
 int generate_training_data(size_t* training_size, Data** training_data)
 {
-	FILE *file = fopen(".cache/NeuronNetwork/Dataset/emnist-letters-train-images-idx3-ubyte", "rb");
+	FILE *file = fopen(".cache/NeuronNetwork/Dataset/Data/emnist-letters-train-images-idx3-ubyte", "rb");
 	read_int(file);
 	size_t num_images = read_int(file);
 	fclose(file);
@@ -19,8 +19,8 @@ int generate_training_data(size_t* training_size, Data** training_data)
 	unsigned char *labels = malloc(num_images * sizeof(unsigned char));
 
 	// Load the images and labels
-	load_images(".cache/NeuronNetwork/Dataset/emnist-letters-train-images-idx3-ubyte", images, num_images);
-	load_labels(".cache/NeuronNetwork/Dataset/emnist-letters-train-labels-idx1-ubyte", labels, num_images);
+	load_images(".cache/NeuronNetwork/Dataset/Data/emnist-letters-train-images-idx3-ubyte", images, num_images);
+	load_labels(".cache/NeuronNetwork/Dataset/Data/emnist-letters-train-labels-idx1-ubyte", labels, num_images);
 
 	// Initialize training_data
 	*training_size = num_images;

@@ -23,32 +23,21 @@ int main(int argc, char *argv[])
 	
 	//Initialize network
 	Network* net = load_network(argv[1]);
-	if(net == NULL)
+	if (net == NULL)
 		return EXIT_FAILURE;
+
+	if (net->sizes[0] != width*height)
+		errx(1,"Image not on valid size\n");
 
 	//Calculate result
 	double *output = feedforward(net, pixelArray);
 	size_t res = argmax(output,net->sizes[net->num_layers-1]);
 	
-	printf("Test:\n");
-	for (size_t i = 0; i < 26; i++) printf("%f\n",output[i]);
-	
 	//Displays final results
 	printf("Output: %c\n", (char)res + 'A');
 	
 	free(output);
-	
-	//Test
-	for (size_t i = 0; i < 20; i++)
-	{
-		output = feedforward(net, pixelArray);
-		res = argmax(output,net->sizes[net->num_layers-1]);
-		printf("Test %zi:\n",i);
-		for (size_t i = 0; i < 26; i++) printf("%f\n",output[i]);
-		printf("Output: %c\n", (char)res + 'A');
-		free(output);
-	}
-	
+	free(pixelArray);
 	free_network(net);
 
 	return EXIT_SUCCESS;
