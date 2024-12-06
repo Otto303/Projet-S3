@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
 
 	//Parameters for training
 	int mini_batch_size = training_size/100;
-	double eta = 0.05;
+	double eta = 0.01;
 
 	//Training with stochastic gradient descent
 	SGD(net, training_data, training_size, mini_batch_size, eta,

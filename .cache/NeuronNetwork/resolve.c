@@ -30,10 +30,25 @@ int main(int argc, char *argv[])
 	double *output = feedforward(net, pixelArray);
 	size_t res = argmax(output,net->sizes[net->num_layers-1]);
 	
+	printf("Test:\n");
+	for (size_t i = 0; i < 26; i++) printf("%f\n",output[i]);
+	
 	//Displays final results
 	printf("Output: %c\n", (char)res + 'A');
 	
 	free(output);
+	
+	//Test
+	for (size_t i = 0; i < 20; i++)
+	{
+		output = feedforward(net, pixelArray);
+		res = argmax(output,net->sizes[net->num_layers-1]);
+		printf("Test %zi:\n",i);
+		for (size_t i = 0; i < 26; i++) printf("%f\n",output[i]);
+		printf("Output: %c\n", (char)res + 'A');
+		free(output);
+	}
+	
 	free_network(net);
 
 	return EXIT_SUCCESS;

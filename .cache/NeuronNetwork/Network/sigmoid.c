@@ -5,14 +5,18 @@
 double sigmoid(double z)
 {
 	//return 1.0/(1.0+exp(-z));
-	return fmax(0,z);
+	//return fmax(0,z);
+	if (z < 0) return 0;
+	else return z;
 }
 
 double sigmoid_prime(double z)
 {
 	//double s = sigmoid(z);
 	//return s*(1-s);
-	return fmax(0,z)/z;
+	//return fmax(0,z)/z;
+	if (z < 0) return 0;
+	else return 1;
 }
 /*
 int main(int argc, char *argv[])

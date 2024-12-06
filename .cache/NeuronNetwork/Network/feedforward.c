@@ -20,10 +20,12 @@ double *feedforward(Network *net, double *input)
 
 			new_activation[j] = sigmoid(z);
 		}
-		
-		activation = realloc(activation,net->sizes[layer+1] * sizeof(double));
+
+		free(activation);
+		activation = calloc(net->sizes[layer+1], sizeof(double));
 		for(size_t j = 0; j < net->sizes[layer+1]; j++) activation[j] = new_activation[j];
 		free(new_activation);
+		new_activation = NULL;
 	}
 	return activation;
 }

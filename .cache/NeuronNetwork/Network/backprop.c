@@ -17,9 +17,6 @@ double *cost_derivative(double *output_activations, double *y, size_t size)
 void backprop(Network *net, double *x, double *y,
 		double **nabla_b[], double ***nabla_w)
 {
-	//Feedforward
-	//size_t temp = 0;
-	//for (size_t i = 0; i < net->num_layers; i++) temp += net->sizes[i];
 	double **activations = malloc(net->num_layers * sizeof(double *));
 	double **zs = malloc((net->num_layers - 1) * sizeof(double *));
 
@@ -28,6 +25,7 @@ void backprop(Network *net, double *x, double *y,
 	for(size_t i = 0; i < net->sizes[0]; i++)
 		activations[0][i] = x[i];
 
+	//Feedforward
 	for(size_t layer = 1; layer < net->num_layers; layer++)
 	{
 		zs[layer - 1] = malloc(net->sizes[layer] * sizeof(double));
