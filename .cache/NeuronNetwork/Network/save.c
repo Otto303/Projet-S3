@@ -47,8 +47,6 @@ unsigned char save_network(Network *net, const char *filename)
 //Load and return the network contained in the given file
 Network* load_network(const char *filename)
 {
-	printf("Loading network...\n");
-	
 	//Load file
 	FILE *file = fopen(filename, "r");
 	if(file == NULL)
@@ -129,6 +127,5 @@ Network* load_network(const char *filename)
 	}
 
 	fclose(file);
-	printf("Network loaded\n");
 	return net;
 }
