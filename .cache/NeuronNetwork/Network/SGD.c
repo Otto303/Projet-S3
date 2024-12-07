@@ -18,7 +18,7 @@ void shuffle(Data *data, int n)
 	}
 }
 
-// train with schoastic gradient descent
+// Train with schoastic gradient descent
 void SGD(Network *net, Data *training_data, int n,
 		int mini_batch_size, double eta, Data *test_data, int n_test)
 {	
@@ -38,7 +38,8 @@ void SGD(Network *net, Data *training_data, int n,
 		}
 		
 		int correct = evaluate(net, test_data, n_test);
-		printf("[Epoch %d] %d/%d (%d%%)\n",j, correct, n_test, correct * 100 / n_test);
+		printf("[Epoch %d] %d/%d (%d%%)\n",
+			j, correct, n_test, correct * 100 / n_test);
 		if (j % 2 == 0) save_network(net,"nw_2");
 		else save_network(net,"nw_1");
 	}

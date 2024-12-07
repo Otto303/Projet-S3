@@ -58,7 +58,8 @@ void update_mini_batch(Network *net, Data *mini_batch,
 		for(size_t i = 0; i < net->num_layers - 1; i++)
 		{
 			delta_nabla_b[i] = matrix_zeros(net->sizes[i + 1], 1);
-			delta_nabla_w[i] = matrix_zeros(net->sizes[i + 1], net->sizes[i]);
+			delta_nabla_w[i] = matrix_zeros(net->sizes[i + 1],
+				net->sizes[i]);
 		}
 		
 		//Call backprop to calculate delta_nabla_b & delta_nabla_w

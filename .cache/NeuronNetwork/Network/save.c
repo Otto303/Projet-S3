@@ -12,7 +12,8 @@ unsigned char save_network(Network *net, const char *filename)
 	FILE *file = fopen(filename, "w");
 	if(file == NULL)
 	{
-		printf("Unable to save Network: file \"%s\" not found\n",filename);
+		printf("Unable to save Network: ");
+		printf("file \"%s\" not found\n",filename);
 		return 0;
 	}
 
@@ -51,7 +52,8 @@ Network* load_network(const char *filename)
 	FILE *file = fopen(filename, "r");
 	if(file == NULL)
 	{
-		printf("Unable to load Network: file \"%s\" not found\n",filename);
+		printf("Unable to load Network: ");
+		printf("file \"%s\" not found\n",filename);
 		return NULL;
 	}
 
@@ -73,7 +75,8 @@ Network* load_network(const char *filename)
 		fscan_res = fscanf(file, "%zu ", &sizes[i]);
 		if (fscan_res != 1)
 		{
-			printf("Unable to load Network: Cannot read layer_size\n");
+			printf("Unable to load Network:");
+			printf("Cannot read layer_size\n");
 			return NULL;
 		}
 	}
@@ -99,7 +102,8 @@ Network* load_network(const char *filename)
 			fscan_res = fscanf(file, "%lf\n", &net->biases[i][j]);
 			if (fscan_res != 1)
 			{
-				printf("Unable to load Network: Cannot read biases\n");
+				printf("Unable to load Network: ");
+				printf("Cannot read biases\n");
 				return NULL;
 			}
 		}
@@ -115,10 +119,12 @@ Network* load_network(const char *filename)
 			net->weights[i][j] = malloc(sizes[i] * sizeof(double));
 			for(size_t k = 0; k < net->sizes[i]; k++)
 			{
-                		fscan_res = fscanf(file, "%lf ", &net->weights[i][j][k]);
+                		fscan_res = fscanf(file, "%lf ",
+                			&net->weights[i][j][k]);
                 		if (fscan_res != 1)
 				{
-					printf("Unable to load Network: Cannot read weights\n");
+					printf("Unable to load Network: ");
+					printf("Cannot read weights\n");
 					return NULL;
 				}
                 	}

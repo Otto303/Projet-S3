@@ -8,13 +8,9 @@ output:
 
 ---Network---
 input:
-	./network 0	#To not evaluate for each epoch (faster)
-	./network 1	#To evaluate for each epoch (slower, but displays advencement of training)
+	./network 'network_save_file (optional)'
 output:
-	Epoch 'current_epoch_number': 'number_training_test_successful'/'number_training_test_total'	#if evaluate
-	Epoch 'current_epoch_number' complete								#otherwise
-	Correct results: 'number_training_test_successful' out of 'number_training_test_total'
-	Input: 'training_test_inputs', Expected output: 'training_test_expected',Network output: 'training_test_output'	#for each element in training_test
+	[Epoch 'current_epoch_number'] : 'number_training_test_successful'/'number_training_test_total' ('advencement'%)
 
 ---Interface---
 input:

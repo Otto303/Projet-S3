@@ -1,4 +1,4 @@
-#include <SDL2/SDL.h> //gcc -o bmp_to_array bmp_to_array.c -lSDL2
+#include <SDL2/SDL.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -55,35 +55,3 @@ double* loadImageAsArray(const char* filename, size_t* width, size_t* height)
 
 	return array;
 }
-/*
-int main(int argc, char* argv[])
-{
-	if(argc != 2)
-	{
-		fprintf(stderr, "Usage: %s <bmp_file>\n", argv[0]);
-		return 1;
-	}
-
-	size_t width;
-	size_t height;
-	double* pixelArray = loadImageAsArray(argv[1], &width, &height);
-
-	if(!pixelArray)
-	{
-		fprintf(stderr, "Failed to load image.\n");
-		return 1;
-	}
-
-	//Display the pixel array as grayscale values (for testing)
-	printf("Image dimensions: %ldx%ld\n", width, height);
-	for(size_t i = 0; i < width * height; i++)
-	{
-		printf("%0.0f ", pixelArray[i]);
-		if ((i+1) % width == 0) printf("\n"); //Newline after each row
-	}
-
-	free(pixelArray);
-
-	return 0;
-}
-*/

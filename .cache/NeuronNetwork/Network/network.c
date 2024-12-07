@@ -1,10 +1,10 @@
 #include <stdlib.h>
 #include <math.h>
 
-double He(double inp) //create random with He initialization
+double He(double inp) // Create random with He initialization
 {
 	double x = sqrt(6.0/inp); //for the varience
-	double nb = (rand() / (double)RAND_MAX) * 2 * x - x; //create random between -x & x
+	double nb = (rand() / (double)RAND_MAX) * 2 * x - x;
 	return nb;
 }
 
@@ -51,7 +51,7 @@ Network* init_network(size_t *sizes, size_t num_layers)
 		{
 			net->weights[i][j] = malloc(x * sizeof(double));
 			for(size_t k = 0; k < x; k++)
-				net->weights[i][j][k] = He(sizes[i]); //xavier(sizes[0],sizes[num_layers - 1]);
+				net->weights[i][j][k] = He(sizes[i]);
 		}
 	}
 

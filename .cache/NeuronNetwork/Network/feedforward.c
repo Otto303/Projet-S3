@@ -10,7 +10,8 @@ double *feedforward(Network *net, double *input)
 
 	for(size_t layer = 0; layer < net->num_layers - 1; layer++)
 	{
-		double *new_activation = calloc(net->sizes[layer+1],sizeof(double));
+		double *new_activation =
+			calloc(net->sizes[layer+1],sizeof(double));
 		for(size_t j = 0; j < net->sizes[layer+1]; j++)
 		{
 			double z = net->biases[layer][j];
@@ -23,7 +24,8 @@ double *feedforward(Network *net, double *input)
 
 		free(activation);
 		activation = calloc(net->sizes[layer+1], sizeof(double));
-		for(size_t j = 0; j < net->sizes[layer+1]; j++) activation[j] = new_activation[j];
+		for(size_t j = 0; j < net->sizes[layer+1]; j++)
+			activation[j] = new_activation[j];
 		free(new_activation);
 		new_activation = NULL;
 	}

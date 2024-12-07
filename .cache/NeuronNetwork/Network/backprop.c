@@ -29,7 +29,7 @@ void backprop(Network *net, double *x, double *y,
 	for(size_t layer = 1; layer < net->num_layers; layer++)
 	{
 		zs[layer - 1] = malloc(net->sizes[layer] * sizeof(double));
-		activations[layer] = malloc(net->sizes[layer] * sizeof(double));
+		activations[layer]=malloc(net->sizes[layer] * sizeof(double));
 
         	// Calcul of z = w * a + b
 		for(size_t j = 0; j < net->sizes[layer]; j++)
@@ -45,7 +45,7 @@ void backprop(Network *net, double *x, double *y,
 	}
 
 	//backward pass
-	double *delta = malloc(net->sizes[net->num_layers - 1] * sizeof(double));
+	double *delta=malloc(net->sizes[net->num_layers - 1] * sizeof(double));
 	double *output_activations = activations[net->num_layers - 1];
 	// Calculate delta for output layer
 	double *cost_deriv = cost_derivative(output_activations, y,
@@ -73,7 +73,8 @@ void backprop(Network *net, double *x, double *y,
 			double sp = ReLu_prime(
 				zs[net->num_layers - 1 - layer][j]);
 
-			delta = realloc(delta,net->sizes[net->num_layers - layer] * sizeof(double));
+			delta = realloc(delta,net->sizes[net->num_layers-layer]
+				* sizeof(double));
 
 			delta[j] = 0;
 			for(size_t k = 0;

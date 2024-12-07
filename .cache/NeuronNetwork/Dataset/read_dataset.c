@@ -13,7 +13,7 @@ int read_int(FILE *file)
 		printf("Error reading dataset from file\n");
 		return 0;
 	}
-	return (bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | bytes[3];
+	return(bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | bytes[3];
 }
 
 // Load images from binary file
@@ -33,7 +33,7 @@ void load_images(const char *filename, unsigned char **images, int num_images)
 	int fread_res; // result of fread
 	for (int i = 0; i < num_images; i++)
 	{
-		fread_res = fread(images[i], sizeof(unsigned char), IMAGE_SIZE, file);
+		fread_res = fread(images[i], sizeof(char), IMAGE_SIZE, file);
 		if (fread_res != IMAGE_SIZE)
 		{
 			printf("Error reading dataset from file\n");
@@ -64,39 +64,3 @@ void load_labels(const char *filename, unsigned char *labels, int num_labels)
 	}
 	fclose(file);
 }
-/*
-int main()
-{
-	FILE *file = fopen("emnist-letters-train-images-idx3-ubyte", "rb");
-	read_int(file);
-	int num_images = read_int(file);
-	fclose(file);
-
-	// Allocate memory for images and labels
-	unsigned char **images = malloc(num_images * sizeof(unsigned char *));
-	for (int i = 0; i < num_images; i++)
-        	images[i] = malloc(IMAGE_SIZE * sizeof(unsigned char));
-	unsigned char *labels = malloc(num_images * sizeof(unsigned char));
-
-	// Load the images and labels
-	load_images("emnist-letters-train-images-idx3-ubyte", images, num_images);
-	load_labels("emnist-letters-train-labels-idx1-ubyte", labels, num_images);
-
-	// Example: Print first image and label
-	printf("First label: %c\n", labels[0] + 'A' - 1);  // Convert to ASCII letter
-	for (int i = 0; i < 28; i++)
-	{
-		for (int j = 0; j < 28; j++)
-			printf("%c", images[0][i * 28 + j] > 128 ? '#' : '.');
-		printf("\n");
-	}
-
-	// Free allocated memory
-	for (int i = 0; i < num_images; i++)
-		free(images[i]);
-	free(images);
-	free(labels);
-
-	return 0;
-}
-*/
