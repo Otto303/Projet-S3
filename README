@@ -8,10 +8,19 @@ output:
 
 ---Network---
 input:
-	./network 'network_save_file (optional)'
+	./network_training 'network_save_file (optional)'
 output:
 	[Epoch 'current_epoch_number'] : 'number_training_test_successful'/'number_training_test_total' ('advencement'%)
 
+input:
+	./network_resolve 'letter_as_bmp_file'
+output:
+	Output: 'letter_ass_char'
+---Rotation---
+input:
+	./rotation 'image_file' 'degrees'
+output:
+	# saves the rotated image
 ---Interface---
 input:
 	./interface

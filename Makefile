@@ -12,5 +12,5 @@ network : .cache/NeuronNetwork/*.c .cache/NeuronNetwork/*.h .cache/NeuronNetwork
 	gcc $(CFLAGS) -o network_training .cache/NeuronNetwork/training.c .cache/NeuronNetwork/Network/*.c .cache/NeuronNetwork/Network/*.h .cache/NeuronNetwork/Dataset/*.c .cache/NeuronNetwork/Dataset/*.h -lm
 	gcc $(CFLAGS) -o network_resolve .cache/NeuronNetwork/resolve.c .cache/NeuronNetwork/predict.h .cache/NeuronNetwork/predict.c .cache/NeuronNetwork/bmp_to_array.h .cache/NeuronNetwork/bmp_to_array.c .cache/NeuronNetwork/Network/*.c .cache/NeuronNetwork/Network/*.h .cache/NeuronNetwork/Dataset/*.c .cache/NeuronNetwork/Dataset/*.h -lm -lSDL2
 
-rotation : .cache/Rotation/*.c .cache/Rotation/*.h
-	gcc $(CFLAGS) -o rotation .cache/Rotation/*.c .cache/Rotation/*.h
+rotation : .cache/Rotation/*.c
+	gcc $(CFLAGS) -o rotation .cache/Rotation/*.c -lSDL2
