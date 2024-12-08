@@ -1,6 +1,6 @@
 CFLAGS = -Wall -Wextra
 
-TARGETS = solver network rotation interface image_save1 image_save2
+TARGETS = solver network rotation interface image_save grid_build
 
 all: $(TARGETS)
 LIBS = -lSDL2 -lSDL2_image -lSDL2_ttf
@@ -15,11 +15,13 @@ network : .cache/NeuronNetwork/*.c .cache/NeuronNetwork/*.h .cache/NeuronNetwork
 rotation : .cache/Rotation/*.c
 	gcc $(CFLAGS) -o rotation .cache/Rotation/*.c -lSDL2
 
+image_save : .cache/image_save/*.c
+	gcc $(CFLAGS) -o image_save1 .cache/image_save/programme.c $(LIBS)
+	gcc $(CFLAGS) -o image_save1 .cache/image_save/programme2.c $(LIBS)
+
+grid_build: .cache/grid_build/*.c
+	gcc $(CFLAGS) -o final_grid .cache/grid_build/final_grid.c $(LIBS)
+	gcc $(CFLAGS) -o grid_from_coordonates .cache/grid_build/grid_from_coordinates.c $(LIBS)
+
 interface : .cache/Interface/*.c .cache/Interface/*.h
 	gcc $(CFLAGS) -o interface .cache/Interface/*.c .cache/Interface/*.h  $(LIBS)
-
-image_save1: .cache/image_save/*.c
-	gcc $(CFLAGS) -o image_save .cache/image_save/*.c
-
-image_save2: .cache/image_save_second/*.c
-	gcc $(CFLAGS) -o  image_save2 .cache/image_save_second/*.c $(LIBS)
