@@ -1,161 +1,247 @@
+#include <SDL2/SDL.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <SDL2/SDL.h>
+#include <stdbool.h>
+#include <sys/stat.h>
+#include <dirent.h>
+#include <string.h>
+#include <unistd.h>
 
+// Fonction pour nettoyer le dossier de sortie
+void clear_directory(const char *path) {
+    DIR *dir = opendir(path);
+    if (dir) {
+        struct dirent *entry;
+        char filepath[512];
 
-#define SEUIL_PIXEL 250  // Seuil pour considérer un pixel comme "non-blanc" (pour BMP 24 bits)
+        while ((entry = readdir(dir)) != NULL) {
+            // Ignorer "." et ".."
+            if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) {
+                continue;
+            }
 
-// Structure pour stocker une image BMP
-typedef struct {
-    unsigned int width;
-    unsigned int height;
-    unsigned char *data;
-} Image;
+            snprintf(filepath, sizeof(filepath), "%s/%s", path, entry->d_name);
+            remove(filepath);
+        }
+        closedir(dir);
+    }
+}
 
-// Fonction pour lire une image BMP en mémoire
-Image* lire_image_bmp(const char *filename) {
-    FILE *file = fopen(filename, "rb");
-    if (!file) {
-        printf("Erreur : impossible d'ouvrir le fichier.\n");
+// Fonction de binarisation
+int **binarize_image(SDL_Surface *image, int threshold) {
+    Uint32 pixel;
+    Uint8 r, g, b;
+    int width = image->w;
+    int height = image->h;
+
+    // Allouer la matrice
+    int **matrix = (int **)malloc(height * sizeof(int *));
+    if (!matrix) {
+        fprintf(stderr, "Erreur : Impossible d'allouer la mémoire pour la matrice.\n");
         return NULL;
     }
-
-    // Lire l'en-tête BMP (54 octets pour un BMP 24 bits non compressé)
-    unsigned char header[54];
-    fread(header, sizeof(unsigned char), 54, file);
-
-    // Extraire les dimensions de l'image
-    unsigned int width = *(int*)&header[18];
-    unsigned int height = *(int*)&header[22];
-    int row_padded = (width * 3 + 3) & (~3);
-
-    // Allouer de la mémoire pour stocker les données de l'image
-    unsigned char *data = (unsigned char*)malloc(row_padded * height);
-    fread(data, sizeof(unsigned char), row_padded * height, file);
-    fclose(file);
-
-    // Créer et remplir la structure Image
-    Image *image = (Image*)malloc(sizeof(Image));
-    image->width = width;
-    image->height = height;
-    image->data = data;
-
-    return image;
-}
-
-// Fonction pour sauvegarder une image BMP
-void sauvegarder_image_bmp(const char *filename, unsigned char *data, int width, int height) {
-    FILE *file = fopen(filename, "wb");
-    if (!file) {
-        printf("Erreur : impossible de créer le fichier.\n");
-        return;
-    }
-
-    unsigned char header[54] = {
-        0x42, 0x4D,             // Signature BMP
-        0, 0, 0, 0,             // Taille du fichier (sera rempli plus tard)
-        0, 0, 0, 0,             // Réservé
-        54, 0, 0, 0,            // Offset vers les données d'image
-        40, 0, 0, 0,            // Taille de l'en-tête DIB
-        0, 0, 0, 0,             // Largeur de l'image (sera rempli plus tard)
-        0, 0, 0, 0,             // Hauteur de l'image (sera rempli plus tard)
-        1, 0,                   // Plans de couleur
-        24, 0,                  // Bits par pixel
-        0, 0, 0, 0,             // Compression
-        0, 0, 0, 0,             // Taille de l'image
-        0, 0, 0, 0,             // Résolution horizontale
-        0, 0, 0, 0,             // Résolution verticale
-        0, 0, 0, 0,             // Nombre de couleurs
-        0, 0, 0, 0              // Couleurs importantes
-    };
-
-    int row_padded = (width * 3 + 3) & (~3);
-    int filesize = 54 + row_padded * height;
-
-    header[2] = (unsigned char)(filesize);
-    header[3] = (unsigned char)(filesize >> 8);
-    header[4] = (unsigned char)(filesize >> 16);
-    header[5] = (unsigned char)(filesize >> 24);
-
-    header[18] = (unsigned char)(width);
-    header[19] = (unsigned char)(width >> 8);
-    header[20] = (unsigned char)(width >> 16);
-    header[21] = (unsigned char)(width >> 24);
-
-    header[22] = (unsigned char)(height);
-    header[23] = (unsigned char)(height >> 8);
-    header[24] = (unsigned char)(height >> 16);
-    header[25] = (unsigned char)(height >> 24);
-
-    fwrite(header, sizeof(unsigned char), 54, file);
-
     for (int i = 0; i < height; i++) {
-        fwrite(data + (i * row_padded), sizeof(unsigned char), row_padded, file);
+        matrix[i] = (int *)malloc(width * sizeof(int));
+        if (!matrix[i]) {
+            fprintf(stderr, "Erreur : Impossible d'allouer la mémoire pour la matrice.\n");
+            for (int j = 0; j < i; j++) {
+                free(matrix[j]);
+            }
+            free(matrix);
+            return NULL;
+        }
     }
 
-    fclose(file);
+    // Remplir la matrice avec les valeurs binaires
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            // Lire le pixel
+            pixel = ((Uint32 *)image->pixels)[y * image->w + x];
+            SDL_GetRGB(pixel, image->format, &r, &g, &b);
+
+            // Calculer l'intensité en niveaux de gris
+            Uint8 grayscale = (r + g + b) / 3;
+
+            // Appliquer le seuil
+            matrix[y][x] = (grayscale < threshold) ? 0 : 1;
+        }
+    }
+
+    return matrix;
 }
 
-// Fonction pour détecter les dimensions de la lettre
-void detecter_dimensions_lettre(Image *image, int x, int y, int *lettre_width, int *lettre_height) {
-    int row_padded = (image->width * 3 + 3) & (~3);
-    int max_x = x, max_y = y;
+// Libérer la mémoire de la matrice
+void free_matrix(int **matrix, int height) {
+    for (int i = 0; i < height; i++) {
+        free(matrix[i]);
+    }
+    free(matrix);
+}
+//si on
 
-    // Parcourir la région autour du point (x, y) pour trouver les limites
-    for (int i = y; i < (int)image->height; i++) {
-        for (int j = x; j < (int)image->width; j++) {
-            int pixel_index = i * row_padded + j * 3;
-            unsigned char blue = image->data[pixel_index];
-            unsigned char green = image->data[pixel_index + 1];
-            unsigned char red = image->data[pixel_index + 2];
+// Trouve les lettres et les enregistre dans des fichiers
 
-            // Si le pixel est "non-blanc"
-            if (red < SEUIL_PIXEL || green < SEUIL_PIXEL || blue < SEUIL_PIXEL) {
-                if (j > max_x) max_x = j;
-                if (i > max_y) max_y = i;
+void extract_letters(SDL_Surface *image, int **matrix, const char *output_dir) {
+    int width = image->w;
+    int height = image->h;
+    bool **visited = (bool **)malloc(height * sizeof(bool *));
+    for (int i = 0; i < height; i++) {
+        visited[i] = (bool *)calloc(width, sizeof(bool));
+    }
+
+    // Structure pour stocker les régions détectées
+    typedef struct {
+        int min_x, min_y, max_x, max_y;
+        int width, height;
+    } Region;
+
+    Region *regions = (Region *)malloc(1000 * sizeof(Region)); // Jusqu'à 1000 régions
+    int region_count = 0;
+
+    // Fonction interne pour explorer une région
+    void explore_region(int x, int y, int *min_x, int *min_y, int *max_x, int *max_y) {
+        if (x < 0 || x >= width || y < 0 || y >= height || visited[y][x] || matrix[y][x] == 1) {
+            return;
+        }
+
+        visited[y][x] = true;
+
+        if (x < *min_x) *min_x = x;
+        if (x > *max_x) *max_x = x;
+        if (y < *min_y) *min_y = y;
+        if (y > *max_y) *max_y = y;
+
+        explore_region(x + 1, y, min_x, min_y, max_x, max_y);
+        explore_region(x - 1, y, min_x, min_y, max_x, max_y);
+        explore_region(x, y + 1, min_x, min_y, max_x, max_y);
+        explore_region(x, y - 1, min_x, min_y, max_x, max_y);
+    }
+
+    // Détection des régions
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            if (matrix[y][x] == 0 && !visited[y][x]) {
+                int min_x = x, max_x = x, min_y = y, max_y = y;
+
+                explore_region(x, y, &min_x, &min_y, &max_x, &max_y);
+
+                int region_width = max_x - min_x + 1;
+                int region_height = max_y - min_y + 1;
+
+                // Stocker la région détectée si elle respecte les critères
+                if (region_count < 1000 && region_width > 2 && region_height > 6 &&
+                    region_width < 40 && region_height < 40) {
+
+                    regions[region_count].min_x = min_x;
+                    regions[region_count].min_y = min_y;
+                    regions[region_count].max_x = max_x;
+                    regions[region_count].max_y = max_y;
+                    regions[region_count].width = region_width;
+                    regions[region_count].height = region_height;
+                    region_count++;
+                }
             }
         }
     }
 
-    // Calculer la largeur et la hauteur de la lettre
-    *lettre_width = max_x - x + 1;
-    *lettre_height = max_y - y + 1;
-}
+    // Traiter les régions validées
+    Uint32 blue_color = SDL_MapRGB(image->format, 0, 0, 255);
+    for (int i = 0; i < region_count; i++) {
+        int min_x = regions[i].min_x;
+        int min_y = regions[i].min_y;
+        int max_x = regions[i].max_x;
+        int max_y = regions[i].max_y;
 
-// Fonction pour découper et sauvegarder une lettre
-void decouper_lettre(Image *image, int x, int y, const char *output_filename) {
-    int lettre_width, lettre_height;
-    detecter_dimensions_lettre(image, x, y, &lettre_width, &lettre_height);
+        // Colorier l'image originale
+        for (int x = min_x; x <= max_x; x++) {
+            if (min_y >= 0 && min_y < height) ((Uint32 *)image->pixels)[min_y * width + x] = blue_color;
+            if (max_y >= 0 && max_y < height) ((Uint32 *)image->pixels)[max_y * width + x] = blue_color;
+        }
+        for (int y = min_y; y <= max_y; y++) {
+            if (min_x >= 0 && min_x < width) ((Uint32 *)image->pixels)[y * width + min_x] = blue_color;
+            if (max_x >= 0 && max_x < width) ((Uint32 *)image->pixels)[y * width + max_x] = blue_color;
+        }
 
-    int row_padded = (image->width * 3 + 3) & (~3);
-    unsigned char *data = (unsigned char*)malloc(lettre_width * lettre_height * 3);
+        // Sauvegarder l'image découpée
+        int letter_width = max_x - min_x + 1;
+        int letter_height = max_y - min_y + 1;
 
-    for (int i = 0; i < lettre_height; i++) {
-        for (int j = 0; j < lettre_width; j++) {
-            for (int k = 0; k < 3; k++) {  // Chaque pixel a 3 octets (BGR)
-                data[(i * lettre_width + j) * 3 + k] = image->data[((y + i) * row_padded + (x + j) * 3 + k)];
+        SDL_Surface *letter_image = SDL_CreateRGBSurface(0, letter_width, letter_height, 32,
+            0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
+
+        if (!letter_image) {
+            fprintf(stderr, "Erreur : Impossible de créer la surface pour une lettre.\n");
+            continue;
+        }
+
+        for (int j = 0; j < letter_height; j++) {
+            for (int i = 0; i < letter_width; i++) {
+                int src_x = min_x + i;
+                int src_y = min_y + j;
+                Uint32 pixel = ((Uint32 *)image->pixels)[src_y * width + src_x];
+                ((Uint32 *)letter_image->pixels)[j * letter_width + i] = pixel;
             }
         }
+
+        // Sauvegarder l'image
+        char filename[256];
+        snprintf(filename, sizeof(filename), "%s/letter_%d_%d.bmp", output_dir, min_x, min_y);
+        SDL_SaveBMP(letter_image, filename);
+        SDL_FreeSurface(letter_image);
     }
 
-    sauvegarder_image_bmp(output_filename, data, lettre_width, lettre_height);
-    free(data);
+    // Libérer la mémoire
+    for (int i = 0; i < height; i++) {
+        free(visited[i]);
+    }
+    free(visited);
+    free(regions);
 }
 
-int main() {
-    // Lire l'image source
-    Image *image = lire_image_bmp("image_source.bmp");
-    if (!image) {
+int main(int argc, char *argv[]) {
+    if (argc != 3) {
+        printf("Usage: %s <image.bmp> <threshold>\n", argv[0]);
         return 1;
     }
 
-    // Découper une lettre, par exemple aux coordonnées (x=50, y=100)
-    decouper_lettre(image, 50, 100, "lettre1.bmp");
+    const char *filename = argv[1];
+    int threshold = atoi(argv[2]);
+    const char *output_dir = "lettres";
 
-    // Libérer la mémoire allouée
-    free(image->data);
-    free(image);
+    // Créer ou vider le répertoire
+    struct stat st = {0};
+    if (stat(output_dir, &st) == -1) {
+        mkdir(output_dir, 0700);
+    } else {
+        clear_directory(output_dir);
+    }
+
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        printf("Erreur SDL : %s\n", SDL_GetError());
+        return 1;
+    }
+
+    SDL_Surface *image = SDL_LoadBMP(filename);
+    if (!image) {
+        printf("Erreur de chargement de l'image : %s\n", SDL_GetError());
+        SDL_Quit();
+        return 1;
+    }
+
+    int **matrix = binarize_image(image, threshold);
+    if (!matrix) {
+        SDL_FreeSurface(image);
+        SDL_Quit();
+        return 1;
+    }
+
+    extract_letters(image, matrix, output_dir);
+
+    SDL_SaveBMP(image, "imbw.bmp");
+
+    free_matrix(matrix, image->h);
+    SDL_FreeSurface(image);
+    SDL_Quit();
 
     return 0;
 }
-
